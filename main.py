@@ -1,10 +1,17 @@
-from colors import compute_colors
+from mandelbrot import calculate_mandelbrot_values
+from colors import coloring_schemes
 from image import draw_image
-from colors import get_rgb, get_hsv
 
 
-def main(w, h, max_iter, min_x, max_x, min_y, max_y, get_color, mode):
-    color_values = compute_colors(w, h, min_x, max_x, min_y, max_y, max_iter, get_color, True)
+base_location = (-1.0, 0.0), 2.0
+zipper_location = (0.274, 0.482), 0.01
+
+
+def main(w, h, center, x_scale, max_iter, coloring_scheme, verbose):
+    mandelbrot_values = calculate_mandelbrot_values(
+        w, h, center, x_scale, max_iter, verbose)
+    mode, get_color = coloring_scheme
+    color_values = map(lambda v: get_color(v[0], v[1], v[2]), mandelbrot_values)
     im = draw_image(color_values, w, h, mode)
     if mode != 'RGB':
         im = im.convert('RGB')
@@ -13,24 +20,10 @@ def main(w, h, max_iter, min_x, max_x, min_y, max_y, get_color, mode):
 
 
 if __name__ == "__main__":
-    w = 1000
-    h = 750
-    max_iter = 2**10
-    center = 0.275, 0.0
-    x_scale = 0.1
-    y_scale = x_scale*h/w
-    min_x, max_x = center[0]-x_scale/2, center[0]+x_scale/2
-    min_y, max_y = center[1]-y_scale/2, center[1]+y_scale/2
-    main(w, h, max_iter, min_x, max_x, min_y, max_y, get_hsv, 'HSV')
-
-
-def unzip():
     w = 800
     h = 600
-    max_iter = 2**12
-    center = 0.274, 0.482
-    x_scale = 0.02
-    y_scale = x_scale*h/w
-    min_x, max_x = center[0]-x_scale/2, center[0]+x_scale/2
-    min_y, max_y = center[1]-y_scale/2, center[1]+y_scale/2
-    main(w, h, max_iter, min_x, max_x, min_y, max_y, get_rgb, 'RGB')
+    max_iter = 10000
+    center, x_scale = zipper_location
+    coloring_scheme = coloring_schemes['gradient']
+    verbose = True
+    main(w, h, center, x_scale, max_iter, coloring_scheme, verbose)
