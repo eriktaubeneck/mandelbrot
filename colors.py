@@ -1,13 +1,11 @@
 import math
 
-from gradient import color_gradient
+from gradient import color_interpolate, circular_gradient
 
 
 rgb_black = 0, 0, 0
-range_size = 300
-purple_gradient = color_gradient((256, 256, 256), (85, 10, 110), 50)
-green_gradient = color_gradient((85, 10, 110), (97, 227, 36), range_size)
-gradient = purple_gradient + green_gradient
+range_size = 240
+gradient = circular_gradient([(97, 227, 36,), (85, 10, 110)], range_size)
 
 
 def get_rgb(escape, z, count):
@@ -23,12 +21,12 @@ def get_rgb(escape, z, count):
 def get_gradient(escape, z, count):
     if not escape:
         return rgb_black
-    # return gradient[min(count, range_size - 1)]
     d = math.log(math.log(abs(z))/math.log(2.0), 2)
     u = count + 1 - d
-    n = min(int(u), range_size-2)
-    color_range = color_gradient(gradient[n], gradient[n+1], 10)
-    return color_range[int(10*(d-math.floor(d)))-1]
+    n = (int(u) % range_size) - 1
+    #return gradient[n]
+    color1, color2 = gradient[n], gradient[n+1]
+    return color_interpolate(color1, color2, u % 1)
 
 
 coloring_schemes = {

@@ -20,10 +20,10 @@ def main(w, h, center, x_scale, max_iter, coloring_scheme, verbose):
 
 
 if __name__ == "__main__":
-    w = 800
-    h = 600
-    max_iter = 10000
-    center, x_scale = zipper_location
+    w = 1600
+    h = 1200
+    max_iter = 2**12
+    center, x_scale = base_location
     coloring_scheme = coloring_schemes['gradient']
     verbose = True
     main(w, h, center, x_scale, max_iter, coloring_scheme, verbose)
